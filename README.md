@@ -2,6 +2,8 @@
 
 Quickly switch DNS!
 
+![Screenshot](./metadata/screenshot-1.png)
+
 ## Usage
 
 ```sh
