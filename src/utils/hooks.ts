@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { showHUD, popToRoot } from "@raycast/api";
 import { useCachedState } from "@raycast/utils";
 import { getStoredDns, setStoredDns, getCurrentDns, applyDns } from "./api";
-import type { DnsItem } from "../types/general";
+import type { DNSModel } from "../types/general";
 
 export const useDnsList = (searchText?: string) => {
   const [loading, setLoading] = useState(false);
-  const [dnsList, setDnsList] = useCachedState<DnsItem[]>("DnsList", []);
+  const [dnsList, setDnsList] = useCachedState<DNSModel[]>("DnsList", []);
 
-  const filterDns = (list: DnsItem[], searchText: string) => {
+  const filterDns = (list: DNSModel[], searchText: string) => {
     if (!searchText) return list;
     return list.filter((item) => {
       return (
@@ -19,7 +19,7 @@ export const useDnsList = (searchText?: string) => {
     });
   };
 
-  const add = (record: DnsItem) => {
+  const add = (record: DNSModel) => {
     const newList = [record, ...dnsList];
     setDnsList(newList);
     setStoredDns(newList);
@@ -64,7 +64,7 @@ export const useCurrentDns = () => {
     }
   }, []);
 
-  const switchDns = async (dnsRecord: DnsItem) => {
+  const switchDns = async (dnsRecord: DNSModel) => {
     if (dnsRecord.dns === dns) {
       await showHUD(`Already in use: ${dnsRecord.dns}`);
       popToRoot({ clearSearchBar: false });
@@ -75,7 +75,7 @@ export const useCurrentDns = () => {
 
     if (!error) {
       setDns(dnsRecord.dns);
-      await showHUD(`${dnsRecord.name} has been applied: ${dnsRecord.dns}`);
+      await showHUD(`${dnsRecord.name} (${dnsRecord.dns}) has been applied ✌️`);
       popToRoot({ clearSearchBar: false });
     }
   };

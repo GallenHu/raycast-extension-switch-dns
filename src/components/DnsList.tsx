@@ -2,10 +2,10 @@ import { Action, ActionPanel, Color, Icon, Keyboard, List } from "@raycast/api";
 import DnsEdit from "./DnsEdit";
 import { useCurrentDns, useDnsList } from "../utils/hooks";
 import { EMPTY_DNS } from "../constants/general";
-import type { DnsItem } from "../types/general";
+import type { DNSModel } from "../types/general";
 
 interface Props {
-  data: DnsItem;
+  data: DNSModel;
 }
 
 export default function DnsList({ data }: Props) {
@@ -22,16 +22,26 @@ export default function DnsList({ data }: Props) {
 
   return (
     <List.Item
-      icon={{ source: isCurrent ? Icon.Checkmark : Icon.Circle, tintColor: isCurrent ? Color.Green : Color.SecondaryText }}
+      icon={{
+        source: isCurrent ? Icon.Checkmark : Icon.Circle,
+        tintColor: isCurrent ? Color.Green : Color.SecondaryText,
+      }}
       title={data.name}
-      subtitle={data.dns}
-      accessories={[{ text: data.description }]}
+      subtitle={data.description}
+      accessories={[
+        { tag: { value: data.dns.replaceAll(',', '  '), color: Color.Blue } },
+      ]}
       actions={
         <ActionPanel>
           <Action title="Apply" icon={Icon.Checkmark} onAction={() => switchDns(data)} />
           <Action.Push title="Add" icon={Icon.PlusCircle} shortcut={SHORTCUTS.ADD} target={<DnsEdit />} />
           {!isEmptyDns && (
-            <Action title="Delete" icon={Icon.MinusCircle} shortcut={SHORTCUTS.DELETE} onAction={() => remove(data.name)} />
+            <Action
+              title="Delete"
+              icon={Icon.MinusCircle}
+              shortcut={SHORTCUTS.DELETE}
+              onAction={() => remove(data.name)}
+            />
           )}
         </ActionPanel>
       }

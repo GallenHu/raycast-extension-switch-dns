@@ -1,6 +1,4 @@
-export const LOCAL_STORAGE_KEY = {
-  DNS_LIST: "DNS_LIST",
-};
+export const LOCAL_STORAGE_KEY = "DNS_LIST";
 
 export const GOOGLE_DNS = { name: "Google", dns: "8.8.8.8,8.8.4.4", description: "Google Public DNS" };
 export const OPEN_DNS = { name: "OpenDNS", dns: "208.67.222.222,208.67.220.220", description: "Public DNS by OpenDNS" };

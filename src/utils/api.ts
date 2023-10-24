@@ -1,22 +1,21 @@
 import { LocalStorage } from "@raycast/api";
 import { execSync, ExecSyncOptions } from "node:child_process";
 import { LOCAL_STORAGE_KEY, DEFAULT_DNS, EMPTY_DNS } from "../constants/general";
-import type { DnsItem } from "./../types/general";
+import type { DNSModel } from "./../types/general";
 
 const COMMANDS = {
-  GET_DEVICE: () => "/usr/sbin/netstat -rn | awk '/default/{print $NF}' | head -1",
+  GET_DEVICE: () => "/sbin/route get default | grep interface | awk '{print $2}'",
   GET_NETWORK_SERVICE: () =>
-    `/usr/sbin/networksetup -listnetworkserviceorder | grep -B 1 $(${COMMANDS.GET_DEVICE()}) | awk -F'\\) ' '{print $2}' | head -1`,
+    `/usr/sbin/networksetup -listnetworkserviceorder | grep -B 1 $(${COMMANDS.GET_DEVICE()}) | head -n 1 | awk '{print $2}'`,
   GET_CURRENT_DNS: (networkService: string) => `/usr/sbin/networksetup -getdnsservers "${networkService}"`,
   SWITCH_DNS: (networkService: string, dns: string) =>
     `/usr/sbin/networksetup -setdnsservers "${networkService}" ${dns}`,
 };
 
-export const getStoredDns = async (): Promise<DnsItem[]> => {
+export const getStoredDns = async (): Promise<DNSModel[]> => {
   await LocalStorage.clear();
 
-  const serializedDnsList =
-    (await LocalStorage.getItem<string>(LOCAL_STORAGE_KEY.DNS_LIST)) || JSON.stringify(DEFAULT_DNS);
+  const serializedDnsList = (await LocalStorage.getItem<string>(LOCAL_STORAGE_KEY)) || JSON.stringify(DEFAULT_DNS);
 
   try {
     return JSON.parse(serializedDnsList);
@@ -25,8 +24,8 @@ export const getStoredDns = async (): Promise<DnsItem[]> => {
   }
 };
 
-export const setStoredDns = (list: DnsItem[]) => {
-  LocalStorage.setItem(LOCAL_STORAGE_KEY.DNS_LIST, JSON.stringify(list));
+export const setStoredDns = (list: DNSModel[]) => {
+  LocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
 };
 
 export const execCmd = async (cmd: string, env: ExecSyncOptions = { shell: "/bin/bash" }) => {

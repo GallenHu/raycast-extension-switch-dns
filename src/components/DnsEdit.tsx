@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Form, useNavigation, Icon } from "@raycast/api";
 import { useState } from "react";
 import { useDnsList } from "../utils/hooks";
-import type { DnsItem } from "../types/general";
+import type { DNSModel } from "../types/general";
 
 export default function DnsEdit() {
   const [nameError, setNameError] = useState<string | undefined>();
@@ -12,12 +12,11 @@ export default function DnsEdit() {
   const validateName = (event: Form.Event<string>) => {
     const value = event.target.value?.trim();
     if (value?.length) {
-      if (dnsList.find(item => item.name.toLowerCase() === value.toLowerCase())) {
+      if (dnsList.find((item) => item.name.toLowerCase() === value.toLowerCase())) {
         setNameError("Name is already in use!");
       } else {
         setNameError(undefined);
       }
-
     } else {
       setNameError("The field should't be empty!");
     }
@@ -39,10 +38,10 @@ export default function DnsEdit() {
     }
   };
 
-  const onSubmit = (values: DnsItem) => {
+  const onSubmit = (values: DNSModel) => {
     const dns = values.dns.replaceAll(" ", ",").split("\n").join(",");
 
-    add({...values, dns});
+    add({ ...values, dns });
 
     pop();
   };
